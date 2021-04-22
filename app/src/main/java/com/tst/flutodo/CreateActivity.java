@@ -32,6 +32,9 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_layout);
 
+        getSupportActionBar().setTitle("Add new task");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         editText = (EditText) findViewById(R.id.ediText);
         btnCreate = (Button) findViewById(R.id.btnCreate);
 
