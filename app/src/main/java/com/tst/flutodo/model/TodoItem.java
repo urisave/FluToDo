@@ -1,10 +1,14 @@
 package com.tst.flutodo.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class TodoItem {
 
-
+    @SerializedName("Key")
     private String key;
+    @SerializedName("Name")
     private String name;
+    @SerializedName("IsComplete")
     private Boolean isCompleted;
 
 
