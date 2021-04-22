@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".CreateActivity">
+
+
+
+    <TextView
+        android:id="@+id/CreateTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="#195ced"
+        android:text="Create task"
+        android:gravity="left" />
+
+    <EditText
+        android:id="@+id/ediText"
+        android:layout_below="@+id/CreateTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter task name"
+        />
+
+    <Button
+        android:id="@+id/btnCreate"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_create"
+        android:textAlignment="center"
+        android:gravity="bottom"
+        tools:ignore="RtlCompat" />
+
+
+
+</RelativeLayout>

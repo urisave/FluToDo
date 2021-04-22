@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">FluToDo</string>
     <string name="btn_new">New</string>
+    <string name="btn_create">Create</string>
 </resources>
