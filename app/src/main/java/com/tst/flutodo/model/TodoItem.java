@@ -2,6 +2,8 @@ package com.tst.flutodo.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.UUID;
+
 public class TodoItem {
 
     @SerializedName("Key")
@@ -41,5 +43,11 @@ public class TodoItem {
         this.key = key;
         this.name = name;
         this.isCompleted = isCompleted;
+    }
+
+    public  TodoItem(String name){
+        this.name=name;
+        this.key= UUID.randomUUID().toString();
+        this.isCompleted=false;
     }
 }
