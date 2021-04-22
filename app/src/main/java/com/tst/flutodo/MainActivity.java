@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -63,6 +64,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //get Item to delete
+                TodoItem taskItem = (TodoItem) adapter.getItem(position);
+                //execute HTTP delete
+                deleteTask(taskItem);
+                //remove task from listview
+                taskList.remove(taskItem);
+                //notify change
+                adapter.notifyDataSetChanged();
+                Toast.makeText(MainActivity.this,"Task deleted: " + taskItem.getName(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
     }
 
@@ -100,6 +116,28 @@ public class MainActivity extends AppCompatActivity {
         // Adding GET request to request queue
         RestController.getInstance().addToRequestQueue(jsonObjectRequestGET);
     };
+
+    public void deleteTask(TodoItem taskItem){
+
+        //Add id of delete item
+        String urlDelete = Constants.URL_API_LOCAL + taskItem.getKey();
+        JsonArrayRequest jsonArrayRequestDelete = new JsonArrayRequest(Request.Method.DELETE, urlDelete, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                Toast.makeText(MainActivity.this,"Deleted", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        RestController.getInstance().addToRequestQueue(jsonArrayRequestDelete);
+        adapter.notifyDataSetChanged();
+    }
+
+
 
     @Override
     public void onDestroy() {
