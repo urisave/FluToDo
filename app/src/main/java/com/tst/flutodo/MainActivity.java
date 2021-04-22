@@ -27,7 +27,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog pDialog;
-
     private List taskList = new ArrayList();
     private ListView listView;
     private CustomAdapter adapter;
@@ -39,11 +38,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setClickable(true);
+
+        //Init Adapter to show items
         adapter = new CustomAdapter(this, taskList);
         listView.setAdapter(adapter);
 
         pDialog = new ProgressDialog(this);
+
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
@@ -68,11 +69,12 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     Log.i("ResponseJson: ", jsonTask);
+                    //Create TodoItem from response
                     TodoItem tdTask = gson.fromJson(jsonTask, TodoItem.class);
+                    //Add item to the list
                     taskList.add(tdTask);
                     hidePDialog();
                 }
-                Toast.makeText(RestController.getInstance(),"TOAST",Toast.LENGTH_LONG);
                 adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Adding request to request queue
+        // Adding GET request to request queue
         RestController.getInstance().addToRequestQueue(jsonObjectRequestGET);
     };
 
