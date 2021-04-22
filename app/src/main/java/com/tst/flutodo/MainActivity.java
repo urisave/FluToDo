@@ -3,8 +3,11 @@ package com.tst.flutodo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private List taskList = new ArrayList();
     private ListView listView;
     private CustomAdapter adapter;
+    private Button btn;
 
 
     @Override
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.list);
+        btn = (Button) findViewById(R.id.btn);
 
         //Init Adapter to show items
         adapter = new CustomAdapter(this, taskList);
@@ -50,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
         pDialog.show();
 
         loadTasks();
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateActivity.class));
+            }
+        });
 
 
     }
