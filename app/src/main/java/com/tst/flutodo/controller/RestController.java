@@ -6,10 +6,16 @@ import android.util.Log;
 import android.widget.Adapter;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -174,12 +180,27 @@ public class RestController extends Application {
         RestController.getInstance().addToRequestQueue(jsonObjectRequestPost);
     }
 
-    public void handleExceptionHttp(VolleyError error){
-        NetworkResponse networkResponse = error.networkResponse;
+    public void handleExceptionHttp(VolleyError volleyError){
+       /* NetworkResponse networkResponse = error.networkResponse;
         if(networkResponse == null){
             Toast.makeText(RestController.getInstance().getBaseContext(),"Http error: " + error.getMessage(), Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(RestController.getInstance().getBaseContext(),"Error received from API: " + error.getMessage()+ "Status code is: " + networkResponse.statusCode , Toast.LENGTH_LONG).show();
+        }*/
+        String message = null;
+        if (volleyError instanceof NetworkError) {
+            message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ServerError) {
+            message = "The server could not be found. Please try again after some time!!";
+        } else if (volleyError instanceof AuthFailureError) {
+            message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof ParseError) {
+            message = "Parsing error! Please try again after some time!!";
+        } else if (volleyError instanceof NoConnectionError) {
+            message = "Cannot connect to Internet...Please check your connection!";
+        } else if (volleyError instanceof TimeoutError) {
+            message = "Connection TimeOut! Please check your internet connection.";
         }
+        Toast.makeText(RestController.getInstance().getBaseContext(),message, Toast.LENGTH_SHORT).show();
     }
 }
