@@ -181,13 +181,8 @@ public class RestController extends Application {
     }
 
     public void handleExceptionHttp(VolleyError volleyError){
-       /* NetworkResponse networkResponse = error.networkResponse;
-        if(networkResponse == null){
-            Toast.makeText(RestController.getInstance().getBaseContext(),"Http error: " + error.getMessage(), Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(RestController.getInstance().getBaseContext(),"Error received from API: " + error.getMessage()+ "Status code is: " + networkResponse.statusCode , Toast.LENGTH_LONG).show();
-        }*/
         String message = null;
+
         if (volleyError instanceof NetworkError) {
             message = "Cannot connect to Internet...Please check your connection!";
         } else if (volleyError instanceof ServerError) {
@@ -201,6 +196,7 @@ public class RestController extends Application {
         } else if (volleyError instanceof TimeoutError) {
             message = "Connection TimeOut! Please check your internet connection.";
         }
+
         Toast.makeText(RestController.getInstance().getBaseContext(),message, Toast.LENGTH_SHORT).show();
     }
 }
