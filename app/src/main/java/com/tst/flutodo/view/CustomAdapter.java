@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tst.flutodo.MainActivity;
 import com.tst.flutodo.R;
+import com.tst.flutodo.controller.RestController;
 import com.tst.flutodo.model.TodoItem;
 
 import java.util.List;
@@ -19,10 +22,12 @@ public class CustomAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List taskItems;
+    private Context context;
 
-    public CustomAdapter(Activity activity, List taskItems) {
+    public CustomAdapter(Activity activity, List taskItems, Context context) {
         this.activity = activity;
         this.taskItems = taskItems;
+        this.context = context;
     }
 
     @Override
@@ -50,6 +55,8 @@ public class CustomAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_row, null);
 
 
+
+
         TextView name = (TextView) convertView.findViewById(R.id.title);
         CheckBox isCompleted =(CheckBox) convertView.findViewById(R.id.checkbox_isCompleted);
 
@@ -62,7 +69,13 @@ public class CustomAdapter extends BaseAdapter {
         //Task state
         isCompleted.setChecked(task.getCompleted());
 
+        //Set position checkbox for onClick
+        isCompleted.setTag(position);
+
+
 
         return convertView;
     }
+
+
 }

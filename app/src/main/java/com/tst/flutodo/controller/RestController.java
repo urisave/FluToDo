@@ -1,10 +1,31 @@
 package com.tst.flutodo.controller;
 
 import android.app.Application;
+import android.net.NetworkRequest;
+import android.util.Log;
+import android.widget.Adapter;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.tst.flutodo.Constants;
+import com.tst.flutodo.MainActivity;
+import com.tst.flutodo.model.TodoItem;
+import com.tst.flutodo.view.CustomAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 public class RestController extends Application {
 
@@ -41,6 +62,124 @@ public class RestController extends Application {
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
+        }
+    }
+
+    /*
+    HTTP REQUESTS
+     */
+
+    //GET HTTP to retrieve API items
+    public void loadTasks(List taskList, CustomAdapter adapter){
+        // Creating volley request obj
+        JsonArrayRequest jsonObjectRequestGET = new JsonArrayRequest(Request.Method.GET, Constants.URL_API_LOCAL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                taskList.clear();
+                Gson gson = new Gson();
+                for (int i = 0; i < response.length(); i++) {
+                    String jsonTask = null;
+                    try {
+                        jsonTask = response.getJSONObject(i).toString();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("ResponseJson: ", jsonTask);
+                    //Create TodoItem from response
+                    TodoItem tdTask = gson.fromJson(jsonTask, TodoItem.class);
+                    //Add item to the list
+                    taskList.add(tdTask);
+                   // hidePDialog();
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error http", error.getMessage());
+                handleExceptionHttp(error);
+            }
+        });
+
+        // Adding GET request to request queue
+        RestController.getInstance().addToRequestQueue(jsonObjectRequestGET);
+    };
+
+    //Http post request with Volley
+    public void createTask(JSONObject itemJson) {
+
+        // Creating volley request obj
+        VolleyJsonRequest jsonObjectRequestPost = new VolleyJsonRequest(Request.Method.POST, Constants.URL_API_LOCAL, itemJson, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Toast.makeText(RestController.getInstance().getBaseContext(), "Taskname "+ itemJson.getString("Name")+" created.", Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handleExceptionHttp(error);
+                Log.e("error http post", error.getMessage());
+            }
+        });
+
+        // Adding request to request queue
+        RestController.getInstance().addToRequestQueue(jsonObjectRequestPost);
+    };
+
+    public void deleteTask(String keyItem, CustomAdapter adapter){
+
+        //Add id of delete item
+        String urlDelete = Constants.URL_API_LOCAL + keyItem;
+        StringRequest str = new StringRequest(Request.Method.DELETE, urlDelete, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(RestController.getInstance().getBaseContext(), "Task deleted", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handleExceptionHttp(error);
+            }
+        });
+
+        RestController.getInstance().addToRequestQueue(str);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void changeStatus(TodoItem taskItem) throws JSONException {
+
+        Gson gson = new Gson();
+        String convertJson = gson.toJson(taskItem);
+        JSONObject itemJsonObj = new JSONObject(convertJson);
+
+        //Add id of delete item
+        String urlPut = Constants.URL_API_LOCAL + taskItem.getKey();
+        VolleyJsonRequest jsonObjectRequestPost = new VolleyJsonRequest(Request.Method.PUT, urlPut, itemJsonObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Toast.makeText(RestController.getInstance().getBaseContext(), "Task status changed", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handleExceptionHttp(error);
+            }
+        });
+
+        // Adding request to request queue
+        RestController.getInstance().addToRequestQueue(jsonObjectRequestPost);
+    }
+
+    public void handleExceptionHttp(VolleyError error){
+        NetworkResponse networkResponse = error.networkResponse;
+        if(networkResponse == null){
+            Toast.makeText(RestController.getInstance().getBaseContext(),"Http error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(RestController.getInstance().getBaseContext(),"Error received from API: " + error.getMessage()+ "Status code is: " + networkResponse.statusCode , Toast.LENGTH_LONG).show();
         }
     }
 }

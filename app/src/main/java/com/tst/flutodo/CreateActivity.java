@@ -26,11 +26,15 @@ public class CreateActivity extends AppCompatActivity {
 
     EditText editText;
     Button btnCreate;
+    private  RestController restController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_layout);
+
+        restController = new RestController();
+
 
         getSupportActionBar().setTitle("Add new task");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -38,18 +42,25 @@ public class CreateActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.ediText);
         btnCreate = (Button) findViewById(R.id.btnCreate);
 
+        //Create button listener
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Get text from edit text
                 String taskName = editText.getText().toString();
+
+                //If text is empty don't create task
                 if (taskName.isEmpty()){
                     Toast.makeText(CreateActivity.this,Constants.MSG_EMPTY_TASK,Toast.LENGTH_LONG).show();
                 }else{
+                    //Create item object with status not completed and name entered at edit text
                     TodoItem itemCreated = new TodoItem(taskName);
 
                     try {
+                        //Create JSONObject to add on POST request
                         JSONObject itemJson = convertObjToJsonObject(itemCreated);
-                        createTask(itemJson);
+                        //HTTP Post call to create item task on API
+                        restController.createTask(itemJson);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -62,35 +73,9 @@ public class CreateActivity extends AppCompatActivity {
         });
     }
 
-    //Http post request with Volley
-    /*
-    PARAM: JSONObject as TodoItem to be added
-     */
-    public void createTask(JSONObject itemJson) {
 
-        // Creating volley request obj
-        JsonObjectRequest jsonObjectRequestPost = new JsonObjectRequest(Request.Method.POST, Constants.URL_API_LOCAL, itemJson, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
 
-                    Toast.makeText(getBaseContext(), "Taskname "+ itemJson.getString("Name")+" sent.", Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error http post", error.getMessage());
-            }
-        });
-
-        // Adding request to request queue
-        RestController.getInstance().addToRequestQueue(jsonObjectRequestPost);
-    };
-
-    //Method to convert TodoItem to JSONObject with gson 3rd party lib.
+    //Method to convert TodoItem to JSONObject using gson 3rd party lib.
     public JSONObject convertObjToJsonObject(TodoItem tdItem) throws JSONException {
         Gson gson = new Gson();
         String convertJson = gson.toJson(tdItem);
