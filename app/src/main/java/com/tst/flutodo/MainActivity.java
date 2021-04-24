@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btn;
     private CheckBox taskState;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private  RestController restController;
 
 
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         //Create controller for Rest calls
         restController = new RestController();
@@ -86,6 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 //notify change
                 adapter.notifyDataSetChanged();
                 return true;
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                restController.loadTasks(taskList,adapter);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
 
