@@ -143,7 +143,7 @@ public class RestController extends Application {
         StringRequest str = new StringRequest(Request.Method.DELETE, urlDelete, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(RestController.getInstance().getBaseContext(), "Task deleted", Toast.LENGTH_LONG).show();
+                //Toast.makeText(RestController.getInstance().getBaseContext(), "Task deleted", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override

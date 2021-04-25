@@ -4,18 +4,18 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     tools:context=".CreateActivity">
-
 
 
     <TextView
         android:id="@+id/CreateTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textColor="#195ced"
+        android:gravity="left"
         android:text="Create task"
-        android:gravity="left" />
+        android:textColor="@color/black"
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/ediText"
@@ -23,9 +23,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter task name"
+        android:backgroundTint="@color/mag"
         />
 
-    <Button
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btnCreate"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -33,7 +35,10 @@
         android:text="@string/btn_create"
         android:textAlignment="center"
         android:gravity="bottom"
-        tools:ignore="RtlCompat" />
+        tools:ignore="RtlCompat"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        />
 
 
 

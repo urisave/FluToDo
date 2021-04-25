@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 restController.deleteTask(taskItem.getKey(), adapter);
                 //remove task from listview
                 taskList.remove(taskItem);
+                Toast.makeText(getApplicationContext(), "ToDo item "+ taskItem.getName()+ "has been deleted correctly", Toast.LENGTH_LONG).show();
                 //notify change
                 adapter.notifyDataSetChanged();
                 return true;
